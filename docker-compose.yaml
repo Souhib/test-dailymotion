@@ -11,8 +11,6 @@ services:
       PGDATA: /data/postgres
     networks:
       - dailymotion
-    ports:
-      - 43123:5432
     volumes:
        - ./postgres:/data/postgres
        - /etc/localtime:/etc/localtime:ro  # In order to have the same timezone as the localhost

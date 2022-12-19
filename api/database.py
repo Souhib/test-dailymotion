@@ -15,6 +15,9 @@ connection.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 
 
 def create_tables():
+    """
+    It creates two tables in the database, one for users and one for user activations
+    """
     cursor = connection.cursor()
     cursor.execute(
         """CREATE TABLE IF NOT EXISTS "user" (

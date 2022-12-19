@@ -8,11 +8,17 @@ app = create_app()
 
 @app.on_event("startup")
 async def startup_event():
+    """
+    It creates the tables in the database
+    """
     create_tables()
 
 
 @app.on_event("shutdown")
 def shutdown_event():
+    """
+    It closes the connection to the database
+    """
     connection.close()
 
 

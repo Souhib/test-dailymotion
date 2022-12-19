@@ -16,7 +16,24 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
 class UserController:
+    """
+    Class used directly inside the router to encapsulate all the method related to a user
+
+    Attributes
+    ----------
+    cursor
+        cursor of the database connection.
+    settings : Settings
+        attributes with all the env variable inside it
+    """
     def __init__(self, cursor, settings: Settings):
+        """
+        This function is used to initialize the cursor and settings for the class
+
+        :param cursor: This is the cursor object that we created in the previous section
+        :param settings: This is the settings object that contains all the env variables settings values
+        :type settings: Settings
+        """
         self.cursor = cursor
         self.settings = settings
 
@@ -142,10 +159,13 @@ class UserController:
         self, data: dict, expires_delta: timedelta | None = None
     ) -> str:
         """
-        Create a JWT Token
-        :param data:
-        :param expires_delta:
-        :return: An encoded jwt token
+        It takes a dictionary of data, and returns a string of encoded data
+
+        :param data: The data to be encoded
+        :type data: dict
+        :param expires_delta: The time delta to set the expiration of the token
+        :type expires_delta: timedelta | None
+        :return: A string
         """
         to_encode = data.copy()
         if expires_delta:
@@ -162,9 +182,11 @@ class UserController:
 
     def login_user(self, form_data: OAuth2PasswordRequestForm):
         """
-        Authenticate user
-        :param form_data:
-        :return: An access token
+        It takes a username and password, checks if the user exists, and if so, creates an access token for the user
+
+        :param form_data: The data sent to the route in the body of the request
+        :type form_data: OAuth2PasswordRequestForm
+        :return: A dictionary with the access token and the token type.
         """
         user = self.authenticate_user(form_data.username, form_data.password)
         if not user:
@@ -182,10 +204,12 @@ class UserController:
 
     def activate_user(self, email_address: str, activation_code: str):
         """
+        It activates a user if the activation code is correct and the user is not already activated
 
-        :param email_address:
-        :param activation_code:
-        :return:
+        :param email_address: The email address of the user to activate
+        :type email_address: str
+        :param activation_code: string containing a 4-digits code
+        :type activation_code: str
         """
         user = self.get_user_by_email(email_address)
         if user.is_active is True:
