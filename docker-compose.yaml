@@ -1,0 +1,37 @@
+version: '3.5'
+
+services:
+
+  postgres:
+    container_name: postgres_container
+    image: postgres
+    environment:
+      POSTGRES_USER: "${DB_USERNAME}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      PGDATA: /data/postgres
+    networks:
+      - dailymotion
+    ports:
+      - 43123:5432
+    volumes:
+       - ./postgres:/data/postgres
+       - /etc/localtime:/etc/localtime:ro  # In order to have the same timezone as the localhost
+    restart: unless-stopped
+
+  api:
+    container_name: dailymotion_user_api
+    build: .
+    ports:
+      - 43122:5000
+    expose:
+      - 43122
+    networks:
+      - dailymotion
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+
+networks:
+  dailymotion:
+    driver: bridge
