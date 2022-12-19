@@ -1,14 +1,13 @@
 import uvicorn
 
 from api.api import create_app
-from api.database import create_database, create_tables, connection
+from api.database import create_tables, connection
 
 app = create_app()
 
 
 @app.on_event("startup")
 async def startup_event():
-    create_database()
     create_tables()
 
 

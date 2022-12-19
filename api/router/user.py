@@ -35,12 +35,16 @@ async def activate_user(
 
 @router.post("/login", response_model=Token)
 def login_for_access_token(
-        form_data: OAuth2PasswordRequestForm = Depends(),
-        user_controller: UserController = Depends(get_user_controller)
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    user_controller: UserController = Depends(get_user_controller),
 ) -> Token:
     return user_controller.login_user(form_data)
 
 
 @router.get("/me", response_model=UserView)
-def read_users_me(current_user: User = Depends(get_current_active_user)) -> UserView:
-    return UserView(id=current_user.id, email_address=current_user.email_address)
+def read_users_me(
+    current_user: User = Depends(get_current_active_user),
+) -> UserView:
+    return UserView(
+        id=current_user.id, email_address=current_user.email_address
+    )

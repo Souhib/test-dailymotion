@@ -11,7 +11,7 @@ from api.model.shared import TokenData
 from api.model.user import User
 from api.settings import Settings
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"/users/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/login")
 
 
 def get_cursor():
@@ -24,18 +24,26 @@ def get_settings() -> Settings:
     return Settings()
 
 
-def get_user_controller(cursor=Depends(get_cursor), settings: Settings = Depends(get_settings)) -> UserController:
+def get_user_controller(
+    cursor=Depends(get_cursor), settings: Settings = Depends(get_settings)
+) -> UserController:
     return UserController(cursor, settings)
 
 
-def get_current_user(token: str = Depends(oauth2_scheme), user_controller: UserController = Depends(get_user_controller), settings: Settings = Depends(get_settings)) -> User:
+def get_current_user(
+    token: str = Depends(oauth2_scheme),
+    user_controller: UserController = Depends(get_user_controller),
+    settings: Settings = Depends(get_settings),
+) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
+        payload = jwt.decode(
+            token, settings.secret_key, algorithms=[settings.algorithm]
+        )
         user_email_address = payload.get("sub")
         if user_email_address is None:
             raise credentials_exception
